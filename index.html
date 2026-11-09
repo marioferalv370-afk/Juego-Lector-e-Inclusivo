@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misión: El Enigma de los Textos Bloqueados - Escape Room DUA</title>
+  <meta name="description" content="Escape Room Digital de Comprensión Lectora para Educación Básica Media con enfoque DUA y la Agencia de Detectives Lectores.">
+  <meta property="og:title" content="Misión: El Enigma de los Textos Bloqueados - Escape Room DUA">
+  <meta property="og:description" content="Aprende y desbloquea textos con la Agencia de Detectives Lectores. Actividad gamificada bajo el Diseño Universal para el Aprendizaje.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Google Fonts: Outfit & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0f172a',
+              darker: '#090d16',
+              card: '#1e293b',
+              cardBorder: '#334155',
+              teal: '#0f766e',
+              tealLight: '#14b8a6',
+              mint: '#2dd4bf',
+              amber: '#f59e0b',
+              amberLight: '#fbbf24',
+              coral: '#f43f5e',
+            }
+          },
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          animation: {
+            'bounce-slow': 'bounce 2.5s infinite',
+            'pulse-fast': 'pulse 1s infinite',
+            'spin-slow': 'spin 12s linear infinite',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Outfit', 'Poppins', sans-serif;
+      background-color: #090d16;
+      color: #f1f5f9;
+      user-select: text;
+    }
+
+    /* Regla visual de lectura DUA */
+    #duaReadingRuler {
+      display: none;
+      position: fixed;
+      left: 0;
+      width: 100vw;
+      height: 48px;
+      background: rgba(45, 212, 191, 0.15);
+      border-top: 2px solid #2dd4bf;
+      border-bottom: 2px solid #2dd4bf;
+      pointer-events: none;
+      z-index: 9999;
+      box-shadow: 0 0 15px rgba(20, 184, 166, 0.35);
+      transition: top 0.05s ease-out;
+    }
+
+    /* Modo Alto Contraste */
+    body.high-contrast {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+    body.high-contrast .bg-slate-900,
+    body.high-contrast .bg-slate-800,
+    body.high-contrast .bg-brand-dark,
+    body.high-contrast .bg-brand-card {
+      background-color: #0a0a0a !important;
+      border-color: #facc15 !important;
+    }
+    body.high-contrast button {
+      border: 2px solid #facc15 !important;
+    }
+    body.high-contrast .text-slate-400,
+    body.high-contrast .text-slate-300 {
+      color: #ffffff !important;
+    }
+
+    /* Tamaño de texto DUA */
+    body.text-size-lg {
+      font-size: 1.15rem;
+    }
+    body.text-size-xl {
+      font-size: 1.25rem;
+    }
+
+    /* Estilo del sello de detective */
+    .stamp-badge {
+      transform: rotate(-10deg);
+      border: 4px dashed #f59e0b;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+
+    /* Animación de apertura */
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Scrollbar estilizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #0f766e;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #14b8a6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-teal-500 selection:text-slate-950">
+
+  <!-- Regla de lectura visual interactiva DUA -->
+  <div id="duaReadingRuler" aria-hidden="true"></div>
+
+  <!-- ENCABEZADO Y BARRA DE ACCESIBILIDAD DUA -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Marca de la Agencia DUA -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-600 to-emerald-400 flex items-center justify-center text-slate-950 font-black shadow-md shadow-teal-500/20">
+          <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs uppercase tracking-wider font-extrabold text-teal-400 bg-teal-950/70 border border-teal-800/80 px-2 py-0.5 rounded-full">
+              Agencia DUA
+            </span>
+            <span class="text-xs text-slate-400 hidden sm:inline">Básica Media (5°-7°)</span>
+          </div>
+          <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white flex items-center gap-1.5">
+            Misión: <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-mint to-amber-300">Textos Bloqueados</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Barra de herramientas DUA (Lector de voz, zoom de fuente, regla de lectura, alto contraste) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-950/70 p-1.5 rounded-2xl border border-slate-800 text-xs">
+        
+        <!-- Botón Lector en voz alta general -->
+        <button id="btnTtsToggle" onclick="toggleMainTts()" title="Leer en voz alta el contenido en pantalla" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-teal-600/30 text-teal-300 hover:bg-teal-600 hover:text-white transition font-medium border border-teal-500/30" aria-label="Leer en voz alta">
+          <i class="fa-solid fa-volume-high" id="ttsIcon"></i>
+          <span class="hidden md:inline" id="ttsLabel">Lector DUA</span>
+        </button>
+
+        <!-- Control de tamaño de texto -->
+        <div class="flex items-center bg-slate-900 rounded-xl p-0.5 border border-slate-750">
+          <button onclick="changeFontSize('sm')" title="Texto Normal" class="px-2 py-1 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 font-bold" aria-label="Texto normal">A</button>
+          <button onclick="changeFontSize('lg')" title="Texto Grande" class="px-2 py-1 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 font-bold text-sm" aria-label="Texto grande">A+</button>
+          <button onclick="changeFontSize('xl')" title="Texto Extra Grande" class="px-2 py-1 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 font-bold text-base" aria-label="Texto extra grande">A++</button>
+        </div>
+
+        <!-- Regla de lectura visual -->
+        <button id="btnRulerToggle" onclick="toggleReadingRuler()" title="Activar/desactivar regla visual de lectura" class="p-2 rounded-xl text-slate-300 hover:text-teal-300 hover:bg-slate-800 transition" aria-label="Regla visual de lectura">
+          <i class="fa-solid fa-ruler-horizontal"></i>
+        </button>
+
+        <!-- Alto contraste -->
+        <button id="btnContrastToggle" onclick="toggleHighContrast()" title="Modo Alto Contraste" class="p-2 rounded-xl text-slate-300 hover:text-amber-300 hover:bg-slate-800 transition" aria-label="Modo alto contraste">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+
+        <!-- Modal Info DUA -->
+        <button onclick="openDuaModal()" title="¿Qué es el marco DUA?" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition" aria-label="Información DUA">
+          <i class="fa-solid fa-circle-info"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL DINÁMICO -->
+  <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-6 flex flex-col justify-center">
+
+    <!-- ==================== PANTALLA 1: INICIO / CUARTEL GENERAL ==================== -->
+    <section id="screenIntro" class="block animate-pop">
+      <div class="bg-gradient-to-b from-slate-800/90 to-slate-900/95 border-2 border-teal-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        
+        <!-- Decoraciones de fondo -->
+        <div class="absolute -top-24 -right-24 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-center max-w-3xl mx-auto space-y-6 relative z-10">
+          
+          <!-- Insignia superior -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950/80 border border-teal-500/40 text-teal-300 text-xs sm:text-sm font-semibold tracking-wide shadow-inner">
+            <i class="fa-solid fa-user-secret text-amber-400"></i>
+            <span>Agencia de Detectives Lectores • Misión Confidencial</span>
+          </div>
+
+          <!-- Título principal -->
+          <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+            Misión: El Enigma de los <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-mint to-amber-300">
+              Textos Bloqueados
+            </span>
+          </h2>
+
+          <!-- Narrativa del Escape Room -->
+          <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-5 text-slate-200 text-sm sm:text-base leading-relaxed text-left space-y-3">
+            <div class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                <i class="fa-solid fa-shield-cat text-lg"></i>
+              </div>
+              <div>
+                <p class="font-bold text-amber-300 text-base mb-1">¡Alerta máxima en la Central de Saberes!</p>
+                <p>
+                  El misterioso <strong>"Cifrador Sombrío"</strong> ha bloqueado los textos de nuestra biblioteca con candados criptográficos. Para descifrarlos y salvar la lectura, debemos activar las <strong>4 llaves maestras</strong>: 
+                  <span class="text-teal-300 font-semibold">Anticipación</span>, 
+                  <span class="text-teal-300 font-semibold">Vocabulario contextual</span>, 
+                  <span class="text-teal-300 font-semibold">Idea Principal</span> e 
+                  <span class="text-teal-300 font-semibold">Inferencias lógicas</span>.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-300 border-t border-slate-800/80">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-brain text-teal-400"></i>
+                <span><strong>Pienso:</strong> ¿Qué me pide el caso?</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-location-crosshairs text-teal-400"></i>
+                <span><strong>Localizo:</strong> Busco pistas en el texto.</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                <span><strong>Explico:</strong> Justifico con lógica.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuración del Detective (Nombre y Avatar) -->
+          <div class="bg-slate-900/80 border border-teal-500/20 rounded-2xl p-5 text-left max-w-xl mx-auto space-y-4">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400" for="detectiveNameInput">
+              <i class="fa-solid fa-id-badge text-teal-400 mr-1.5"></i> Identificación del Detective:
+            </label>
+            <input type="text" id="detectiveNameInput" value="Detective Estrella" placeholder="Escribe tu nombre o apodo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-medium focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-500/30 text-sm">
+
+            <!-- Selector de Avatar -->
+            <div>
+              <span class="block text-xs font-bold text-slate-400 mb-2">Selecciona tu Credencial:</span>
+              <div class="grid grid-cols-4 gap-2" id="avatarSelector">
+                <button type="button" onclick="selectAvatar('🔍 Lupa')" class="avatar-btn p-2 rounded-xl bg-slate-950 border-2 border-teal-400 text-center transition hover:scale-105" data-avatar="🔍 Lupa">
+                  <span class="text-2xl block">🔍</span>
+                  <span class="text-[11px] font-semibold text-slate-200">Lupa</span>
+                </button>
+                <button type="button" onclick="selectAvatar('🕵️ Audaz')" class="avatar-btn p-2 rounded-xl bg-slate-950 border border-slate-750 text-center transition hover:scale-105" data-avatar="🕵️ Audaz">
+                  <span class="text-2xl block">🕵️</span>
+                  <span class="text-[11px] font-semibold text-slate-200">Audaz</span>
+                </button>
+                <button type="button" onclick="selectAvatar('🦉 Búho')" class="avatar-btn p-2 rounded-xl bg-slate-950 border border-slate-750 text-center transition hover:scale-105" data-avatar="🦉 Búho">
+                  <span class="text-2xl block">🦉</span>
+                  <span class="text-[11px] font-semibold text-slate-200">Búho</span>
+                </button>
+                <button type="button" onclick="selectAvatar('🦊 Zorro')" class="avatar-btn p-2 rounded-xl bg-slate-950 border border-slate-750 text-center transition hover:scale-105" data-avatar="🦊 Zorro">
+                  <span class="text-2xl block">🦊</span>
+                  <span class="text-[11px] font-semibold text-slate-200">Zorro</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de Inicio con sonido -->
+          <div class="pt-2">
+            <button onclick="startGame()" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 via-teal-600 to-emerald-600 text-slate-950 font-black text-lg sm:text-xl shadow-xl shadow-teal-500/30 hover:shadow-teal-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+              <i class="fa-solid fa-key text-slate-950 group-hover:rotate-45 transition-transform duration-300"></i>
+              <span>Iniciar Investigación</span>
+              <i class="fa-solid fa-arrow-right text-slate-950 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+            <p class="text-xs text-slate-400 mt-2">10 Retos Pedagógicos • 3 Lupas de Investigación • Retroalimentación P-L-E</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANTALLA 2: JUEGO / SALA DE RETOS ==================== -->
+    <section id="screenGame" class="hidden space-y-5 animate-pop">
+      
+      <!-- Panel de estado del caso (Progreso, Vidas y XP) -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          
+          <!-- Reto actual e insignia de habilidad -->
+          <div class="flex items-center gap-2">
+            <span id="challengeBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-teal-950 text-teal-300 border border-teal-700/60">
+              Reto 1 de 10
+            </span>
+            <span id="categoryBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-300">
+              Anticipación
+            </span>
+          </div>
+
+          <!-- Marcadores: Vidas (Lupas) y XP -->
+          <div class="flex items-center gap-4">
+            
+            <!-- Contador de Vidas (Lupas DUA) -->
+            <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800" title="Lupas de investigación restantes">
+              <span class="text-xs font-bold text-slate-400 mr-1 hidden sm:inline">Lupas:</span>
+              <div id="livesContainer" class="flex items-center gap-1.5 text-base sm:text-lg">
+                <i class="fa-solid fa-magnifying-glass text-teal-400 life-icon"></i>
+                <i class="fa-solid fa-magnifying-glass text-teal-400 life-icon"></i>
+                <i class="fa-solid fa-magnifying-glass text-teal-400 life-icon"></i>
+              </div>
+            </div>
+
+            <!-- Contador de XP -->
+            <div class="flex items-center gap-1.5 bg-amber-950/40 border border-amber-600/40 px-3 py-1.5 rounded-xl text-amber-300 font-extrabold text-sm sm:text-base">
+              <i class="fa-solid fa-star text-amber-400 animate-pulse"></i>
+              <span id="xpScore">0</span>
+              <span class="text-xs text-amber-400/80 font-normal">XP</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Barra de progreso segmentada -->
+        <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden p-0.5 border border-slate-800">
+          <div id="progressBar" class="bg-gradient-to-r from-teal-500 to-mint h-full rounded-full transition-all duration-500" style="width: 10%;"></div>
+        </div>
+      </div>
+
+      <!-- Tarjeta del Caso / Expediente Secreto -->
+      <div class="bg-gradient-to-b from-slate-850 to-slate-900 border-2 border-slate-750 rounded-3xl p-5 sm:p-7 shadow-2xl relative">
+        
+        <!-- Etiqueta de Expediente -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span class="text-xs font-mono font-bold uppercase tracking-widest text-slate-400">
+              Expediente Confidencial #<span id="caseNumber">01</span>
+            </span>
+          </div>
+
+          <!-- Botón de Audio individual para el reto -->
+          <button onclick="readCurrentChallengeTts()" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-teal-600/20 text-teal-300 hover:bg-teal-600 hover:text-white transition text-xs font-semibold border border-teal-500/30" title="Escuchar texto y pregunta">
+            <i class="fa-solid fa-headphones"></i>
+            <span>Escuchar Caso</span>
+          </button>
+        </div>
+
+        <!-- Texto de lectura o contexto de la evidencia -->
+        <div class="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 sm:p-5 mb-5 relative">
+          <div class="text-xs font-semibold text-teal-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-file-lines"></i>
+            <span id="evidenceSource">Evidencia Textual</span>
+          </div>
+          <div id="evidenceText" class="text-slate-200 text-sm sm:text-base leading-relaxed space-y-2">
+            <!-- Inyectado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Pista opcional del Cuartel General (Andamiaje DUA) -->
+        <div class="mb-5">
+          <button onclick="toggleHint()" id="btnHintToggle" class="text-xs text-amber-400/90 hover:text-amber-300 font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-regular fa-lightbulb"></i>
+            <span>¿Necesitas una pista del Cuartel General?</span>
+          </button>
+          <div id="hintBox" class="hidden mt-2 p-3 rounded-xl bg-amber-950/30 border border-amber-600/40 text-amber-200 text-xs leading-relaxed animate-pop">
+            <!-- Pista inyectada dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Pregunta del Reto -->
+        <div class="mb-5">
+          <h3 id="questionText" class="text-base sm:text-lg font-bold text-white leading-snug">
+            <!-- Pregunta inyectada -->
+          </h3>
+        </div>
+
+        <!-- Opciones de Respuesta (A, B, C, D) -->
+        <div id="optionsContainer" class="grid grid-cols-1 gap-3">
+          <!-- Opciones inyectadas dinámicamente -->
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== PANTALLA 3: FIN DE JUEGO / INFORME FINAL ==================== -->
+    <section id="screenFinal" class="hidden space-y-6 animate-pop">
+      <div class="bg-gradient-to-b from-slate-850 to-slate-900 border-2 border-teal-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        
+        <!-- Sello de Caso Resuelto -->
+        <div class="flex justify-center mb-4">
+          <div class="stamp-badge px-6 py-2 rounded-xl bg-amber-500/20 text-amber-400 font-black tracking-widest uppercase text-sm sm:text-base inline-block">
+            ★ CASO RESUELTO POR LA AGENCIA ★
+          </div>
+        </div>
+
+        <div class="text-center max-w-2xl mx-auto space-y-6">
+          
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-black text-white">¡Misión Cumplida, Detective!</h2>
+            <p class="text-slate-300 text-sm sm:text-base mt-1" id="finalGreetings">
+              Has derrotado al Cifrador Sombrío y liberado los textos de la Biblioteca.
+            </p>
+          </div>
+
+          <!-- Credencial / Resumen de Resultados -->
+          <div class="bg-slate-950/80 border-2 border-teal-500/30 rounded-2xl p-5 sm:p-6 text-left shadow-inner">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div class="flex items-center gap-3">
+                <span id="finalAvatar" class="text-4xl p-2 bg-slate-900 rounded-2xl border border-slate-750">🔍</span>
+                <div>
+                  <h4 id="finalDetectiveName" class="font-extrabold text-lg text-white">Detective</h4>
+                  <span id="finalRankBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-900 text-teal-300 border border-teal-700">
+                    Detective Maestro DUA
+                  </span>
+                </div>
+              </div>
+
+              <!-- Puntos Totales -->
+              <div class="text-center sm:text-right">
+                <span class="text-xs text-slate-400 block font-semibold">PUNTAJE TOTAL</span>
+                <span id="finalXpDisplay" class="text-3xl font-black text-amber-400">1000</span>
+                <span class="text-xs text-amber-300 font-bold">/ 1000 XP</span>
+              </div>
+            </div>
+
+            <!-- Medallas de Habilidad Logradas -->
+            <div class="py-4">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
+                <i class="fa-solid fa-award text-teal-400 mr-1"></i> Medallas de Investigación Obtenidas:
+              </span>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs" id="medalsList">
+                <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+                  <span class="text-lg">🦅</span>
+                  <div>
+                    <strong class="block text-slate-200">Ojo de Halcón</strong>
+                    <span class="text-[10px] text-teal-400">Anticipación</span>
+                  </div>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+                  <span class="text-lg">🎧</span>
+                  <div>
+                    <strong class="block text-slate-200">Acceso DUA</strong>
+                    <span class="text-[10px] text-teal-400">Inclusión</span>
+                  </div>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+                  <span class="text-lg">📚</span>
+                  <div>
+                    <strong class="block text-slate-200">Léxico Detective</strong>
+                    <span class="text-[10px] text-teal-400">Vocabulario</span>
+                  </div>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+                  <span class="text-lg">🎯</span>
+                  <div>
+                    <strong class="block text-slate-200">Brújula Textual</strong>
+                    <span class="text-[10px] text-teal-400">Idea Principal</span>
+                  </div>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+                  <span class="text-lg">🧩</span>
+                  <div>
+                    <strong class="block text-slate-200">Deducción P-L-E</strong>
+                    <span class="text-[10px] text-teal-400">Inferencias</span>
+                  </div>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+                  <span class="text-lg">🌟</span>
+                  <div>
+                    <strong class="block text-slate-200">Maestría DUA</strong>
+                    <span class="text-[10px] text-amber-400">Comprensión</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CITA OBLIGATORIA DUA MOTIVADORA -->
+            <div class="mt-2 bg-gradient-to-r from-teal-950/80 to-slate-900 p-4 rounded-xl border border-teal-500/40 text-center">
+              <i class="fa-solid fa-quote-left text-teal-400 text-sm block mb-1"></i>
+              <p class="text-teal-200 font-bold text-sm sm:text-base italic leading-relaxed">
+                "Con la voz, con el texto o un mapa visual, comprender es un derecho universal"
+              </p>
+              <span class="text-[11px] text-teal-400/80 block mt-1 uppercase tracking-wider font-semibold">
+                — Principio Fundamental del Diseño Universal para el Aprendizaje
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Acciones Finales -->
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button onclick="restartGame()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-600 text-slate-950 font-black text-sm sm:text-base shadow-lg hover:scale-105 active:scale-95 transition flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span>Reiniciar Misión</span>
+            </button>
+            <button onclick="window.print()" class="px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm sm:text-base border border-slate-700 transition flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-print"></i>
+              <span>Imprimir Credencial</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL DE RETROALIMENTACIÓN INMEDIATA (P-L-E) ==================== -->
+  <div id="feedbackModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="bg-slate-900 border-2 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative animate-pop space-y-4" id="feedbackModalCard">
+      
+      <!-- Encabezado de resultado (Correcto / Incorrecto) -->
+      <div class="flex items-center gap-3">
+        <div id="feedbackIconBox" class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-black shrink-0">
+          <!-- Icono inyectado -->
+        </div>
+        <div>
+          <span id="feedbackSub" class="text-xs font-bold uppercase tracking-wider"></span>
+          <h3 id="feedbackTitle" class="text-xl font-black text-white leading-tight"></h3>
+        </div>
+      </div>
+
+      <!-- Explicación Pedagógica con el método "Pienso, Localizo y Explico" -->
+      <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 space-y-2.5 text-xs sm:text-sm text-slate-300">
+        <div class="text-[11px] font-bold text-teal-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
+          <i class="fa-solid fa-microscope"></i>
+          <span>Análisis Detective: Pienso, Localizo y Explico</span>
+        </div>
+        
+        <div class="flex items-start gap-2">
+          <span class="text-teal-400 font-bold shrink-0">🧠 Pienso:</span>
+          <p id="feedbackPienso" class="text-slate-300"></p>
+        </div>
+
+        <div class="flex items-start gap-2">
+          <span class="text-teal-400 font-bold shrink-0">📍 Localizo:</span>
+          <p id="feedbackLocalizo" class="text-slate-300"></p>
+        </div>
+
+        <div class="flex items-start gap-2">
+          <span class="text-amber-400 font-bold shrink-0">💡 Explico:</span>
+          <p id="feedbackExplico" class="text-slate-200 font-medium"></p>
+        </div>
+      </div>
+
+      <!-- Botón de Continuar -->
+      <div class="pt-2">
+        <button id="btnFeedbackNext" onclick="nextChallenge()" class="w-full py-3.5 rounded-xl font-black text-sm text-slate-950 transition hover:brightness-110 active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+          <span>Continuar Investigación</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL DE RECUPERACIÓN DE LUPAS (DUA NO PUNITIVO) ==================== -->
+  <div id="recoveryModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 text-center shadow-2xl animate-pop space-y-4">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto">
+        <i class="fa-solid fa-kit-medical"></i>
+      </div>
+      <div>
+        <h3 class="text-xl font-black text-white">¡Estación de Apoyo DUA!</h3>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">
+          En la Agencia de Detectives Lectores el error es un paso natural del aprendizaje. El Cuartel General ha recargado tus <strong>3 Lupas de Investigación</strong> para que no pierdas el entusiasmo y continúes resolviendo los enigmas.
+        </p>
+      </div>
+      <button onclick="closeRecoveryModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-sm shadow-lg hover:scale-105 active:scale-95 transition">
+        ¡Recargar Lupas y Continuar! 🔍
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL INFORMATIVO MARCO DUA ==================== -->
+  <div id="duaInfoModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-750 rounded-3xl max-w-lg w-full p-6 shadow-2xl animate-pop space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-black text-teal-300 flex items-center gap-2">
+          <i class="fa-solid fa-universal-access"></i>
+          <span>Diseño Universal para el Aprendizaje (DUA)</span>
+        </h3>
+        <button onclick="closeDuaModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="text-xs sm:text-sm text-slate-300 space-y-3 leading-relaxed">
+        <p>
+          Este Escape Room está diseñado bajo las pautas del DUA para que todas las niñas y niños de Básica Media comprendan con autonomía:
+        </p>
+        <ul class="space-y-2 list-none">
+          <li class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+            <strong class="text-teal-400 block mb-0.5">1. Múltiples formas de Representación:</strong>
+            Texto estructurado, lector en voz alta (Text-To-Speech), regla visual de lectura y modos de contraste.
+          </li>
+          <li class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+            <strong class="text-teal-400 block mb-0.5">2. Múltiples formas de Acción y Expresión:</strong>
+            Estrategia explícita "Pienso, Localizo y Explico", pistas de andamiaje y opciones claras.
+          </li>
+          <li class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+            <strong class="text-amber-400 block mb-0.5">3. Múltiples formas de Implicación:</strong>
+            Gamificación detectivezca, retroalimentación formativa inmediata y sistema no punitivo.
+          </li>
+        </ul>
+        <p class="text-center italic text-teal-300 text-xs pt-1">
+          "Comprender es un derecho universal."
+        </p>
+      </div>
+      <button onclick="closeDuaModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">
+        Cerrar Guía DUA
+      </button>
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA ACCESIBLE -->
+  <footer class="bg-slate-950 border-t border-slate-850 py-3 text-center text-xs text-slate-500">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>Agencia de Detectives Lectores • Proyecto Pedagógico DUA</span>
+      <span>Educación Básica Media • Quinto a Séptimo Año</span>
+    </div>
+  </footer>
+
+  <!-- ==================== LÓGICA JAVASCRIPT DEL JUEGO ==================== -->
+  <script>
+    /* =====================================================================
+       1. BANCO PEDAGÓGICO DE 10 RETOS (DUA - BÁSICA MEDIA)
+       ===================================================================== */
+    const CHALLENGES = [
+      {
+        id: 1,
+        category: "Anticipación",
+        title: "Reto 1: La Portada Misteriosa",
+        evidenceSource: "Portada de Libro y Pistas Visuales",
+        evidenceText: `
+          <p>Vas a abrir el expediente titulado <strong>«El río que quería seguir cantando»</strong>.</p>
+          <p class="text-slate-300 italic">En la ilustración se aprecia un río de aguas que solían ser transparentes entre altas montañas, pero cerca de su ribera hay bolsas plásticas y botellas abandonadas. Los peces asoman sus cabezas con miradas tristes.</p>
+        `,
+        hint: "Observa la contradicción entre el título ('quería seguir cantando') y la basura plástica junto a los peces preocupados.",
+        question: "Antes de iniciar la lectura, ¿qué predicción razonable puedes hacer sobre el conflicto principal basándote en el título y la ilustración?",
+        options: [
+          { text: "Los peces organizarán un festival submarino para inventar canciones de fiesta.", isCorrect: false },
+          { text: "El río está sufriendo por la contaminación humana y buscará la forma de sanar y recuperar su canto.", isCorrect: true },
+          { text: "El río se secará porque el sol decidió brillar con más fuerza en la montaña.", isCorrect: false },
+          { text: "Los habitantes del pueblo construirán un tobogán acuático para los turistas.", isCorrect: false }
+        ],
+        pienso: "La anticipación relaciona los elementos del título con la evidencia de la ilustración.",
+        localizo: "El título dice que el río 'quería seguir cantando' y la imagen muestra basura plástica y peces desanimados.",
+        explico: "La hipótesis más sólida es que el río enfrenta el problema ecológico de la contaminación que amenaza su vitalidad."
+      },
+      {
+        id: 2,
+        category: "Acceso DUA",
+        title: "Reto 2: Herramientas sin Barreras",
+        evidenceSource: "Manual de la Agencia Inclusiva",
+        evidenceText: `
+          <p>Un detective recién ingresado a la Agencia tiene fatiga visual y se le dificulta decodificar párrafos extensos con letra muy pequeña en pantalla.</p>
+          <p class="text-slate-300 italic">El principio de Múltiples Formas de Representación del DUA garantiza que ningún estudiante quede excluido por el formato del material.</p>
+        `,
+        hint: "Piensa en apoyos digitales que permiten recibir la información por el canal auditivo y ajustar el tamaño del texto.",
+        question: "Según el marco DUA, ¿qué apoyo tecnológico es el más adecuado para que el estudiante comprenda el caso con total autonomía?",
+        options: [
+          { text: "Pedirle que copie el texto a mano tres veces para ver si se le graba en la memoria.", isCorrect: false },
+          { text: "Activar el Lector en Voz Alta (Text-to-Speech) y agrandar el tamaño de la tipografía.", isCorrect: true },
+          { text: "Decirle que no lea y que espere a que otro compañero le cuente qué pasó.", isCorrect: false },
+          { text: "Apagar la pantalla y pedirle que adivine el contenido del expediente.", isCorrect: false }
+        ],
+        pienso: "El DUA busca eliminar las barreras de acceso sin rebajar el nivel de aprendizaje.",
+        localizo: "El detective tiene dificultad con la letra pequeña y el texto extenso.",
+        explico: "El lector de pantalla en voz alta y el aumento de tipografía permiten acceder al contenido por la vía auditiva y visual adecuada."
+      },
+      {
+        id: 3,
+        category: "Vocabulario por Contexto",
+        title: "Reto 3: El Enigma de la Última Gota",
+        evidenceSource: "Fragmento del relato «La última gota»",
+        evidenceText: `
+          <p>«Al cruzar el patio durante el recreo, Mateo descubrió que varios grifos quedaron mal cerrados y el agua limpia corría sin control hacia la alcantarilla. Sintió profunda indignación ante semejante <strong>desperdicio</strong>, sabiendo que en el caserío vecino las familias debían racionar cada balde». </p>
+        `,
+        hint: "Compara el agua que corre sin control con las familias que deben ahorrar y racionar cada balde.",
+        question: "A partir de las pistas del texto, ¿cuál es el significado exacto de la palabra «desperdicio»?",
+        options: [
+          { text: "Derroche, malgasto innecesario y descuido de un recurso valioso.", isCorrect: true },
+          { text: "Limpieza automática del suelo de la escuela con agua jabonosa.", isCorrect: false },
+          { text: "Juego recreativo planificado por los docentes en la hora de descanso.", isCorrect: false },
+          { text: "Almacenamiento higiénico de agua potable en tanques seguros.", isCorrect: false }
+        ],
+        pienso: "Determino el sentido de la palabra analizando la situación y las emociones del personaje.",
+        localizo: "El agua 'corría sin control hacia la alcantarilla' en contraste con familias que 'debían racionar cada balde'.",
+        explico: "«Desperdicio» se refiere al malgasto injustificado y descuido de un bien indispensable como el agua potable."
+      },
+      {
+        id: 4,
+        category: "Vocabulario por Contexto",
+        title: "Reto 4: Informe Hidrológico",
+        evidenceSource: "Texto Informativo Científico",
+        evidenceText: `
+          <p>«Aunque el 70% de la superficie terrestre es agua, únicamente el 2.5% es agua dulce y la gran mayoría está atrapada en glaciares. Por tal motivo, la <strong>disponibilidad</strong> de agua apta para el consumo humano y el riego de cultivos es sumamente escasa y desbalanceada en el mundo». </p>
+        `,
+        hint: "Observa cómo se relaciona con tener el recurso listo y al alcance para beber y cultivar alimentos.",
+        question: "En el informe científico, ¿qué significado tiene la palabra «disponibilidad»?",
+        options: [
+          { text: "La temperatura fría que tiene el agua al descender de las montañas nevadas.", isCorrect: false },
+          { text: "La condición de contar con el recurso al alcance para ser utilizado efectivamente.", isCorrect: true },
+          { text: "La transparencia y claridad del agua cuando se mira a través de un microscopio.", isCorrect: false },
+          { text: "El sonido agradable que produce una cascada cuando cae sobre las rocas.", isCorrect: false }
+        ],
+        pienso: "Analizo el término en relación con la escasez y la necesidad de uso humano.",
+        localizo: "El texto afirma que 'únicamente el 2.5% es dulce... por tal motivo, la disponibilidad... es sumamente escasa'.",
+        explico: "Disponibilidad hace referencia a la cualidad de tener algo a mano y listo para ser aprovechado por las personas."
+      },
+      {
+        id: 5,
+        category: "Idea Principal Narrativa",
+        title: "Reto 5: La Iniciativa de Camila",
+        evidenceSource: "Cuento Escolar",
+        evidenceText: `
+          <p>«Camila observó que una tubería averiada goteaba sin cesar en el jardín de la escuela. En vez de ignorarla, colocó un balde para recolectar el agua, avisó de inmediato a Don Ramón el conserje para repararla, y motivó a sus compañeros a formar la 'Patrulla Azul' para revisar los baños en cada recreo». </p>
+        `,
+        hint: "¿Cuál es el mensaje que resume todas las acciones positivas de Camila y su efecto en los demás?",
+        question: "¿Cuál es la idea principal de esta historia?",
+        options: [
+          { text: "A Camila le aburría jugar con sus amigos durante el recreo.", isCorrect: false },
+          { text: "Las tuberías de las escuelas siempre están oxidadas por el frío.", isCorrect: false },
+          { text: "La iniciativa responsable de una estudiante puede inspirar a toda una comunidad a cuidar el agua.", isCorrect: true },
+          { text: "Don Ramón prefería reparar tuberías antes que cuidar la puerta principal.", isCorrect: false }
+        ],
+        pienso: "Identifico la idea global que conecta el inicio, la acción de Camila y el desenlace colectivo.",
+        localizo: "Camila actúa de inmediato (coloca un balde, avisa y organiza la 'Patrulla Azul' escolar).",
+        explico: "La idea principal destaca el liderazgo transformador y la conciencia ecológica comunitaria iniciada por la niña."
+      },
+      {
+        id: 6,
+        category: "Idea Principal Informativa",
+        title: "Reto 6: El Manifiesto del Agua Dulce",
+        evidenceSource: "Artículo de Divulgación Ambiental",
+        evidenceText: `
+          <p>«El agua dulce no es un recurso infinito. La sobreexplotación de pozos, la contaminación de ríos y el calentamiento global amenazan las reservas del planeta. Proteger los bosques que alimentan las fuentes de agua y practicar un consumo consciente en el hogar son deberes impostergables de toda la sociedad». </p>
+        `,
+        hint: "Busca la opción que englobe tanto el problema global como las soluciones necesarias.",
+        question: "¿Qué afirmación sintetiza mejor la idea principal del artículo de divulgación?",
+        options: [
+          { text: "La conservación urgente del agua dulce exige acciones de protección ambiental y un consumo responsable de todos.", isCorrect: true },
+          { text: "Los bosques solo sirven para dar sombra a los animales en días muy calurosos.", isCorrect: false },
+          { text: "El agua dulce se renovará sola sin importar cuánta basura arrojemos en los ríos.", isCorrect: false },
+          { text: "Los pozos de agua solo deben usarse durante las fiestas patronales de los pueblos.", isCorrect: false }
+        ],
+        pienso: "Sintetizo el mensaje medular que une el diagnóstico del problema con el llamado a la acción.",
+        localizo: "El texto inicia con 'el agua no es un recurso infinito' y concluye con 'proteger... y practicar un consumo consciente son deberes impostergables'.",
+        explico: "La idea central resume que salvaguardar el agua dulce demanda un compromiso colectivo tanto en conservación como en hábitos diarios."
+      },
+      {
+        id: 7,
+        category: "Inferencia I",
+        title: "Reto 7: La Campaña de los Carteles",
+        evidenceSource: "Registro de Campo de la Escuela",
+        evidenceText: `
+          <p>«Luego de arreglar la fuga, Camila dedicó su tarde libre a pintar llamativos carteles con gotas de agua que decían: '¡Cierra bien el grifo, cada gota cuenta!'. Los pegó sobre los lavamanos. Durante los días siguientes, nadie dejó las llaves goteando y los pasillos lucían limpios y secos». </p>
+        `,
+        hint: "¿Por qué Camila decidió comunicar con dibujos y mensajes visuales en vez de regañar a sus compañeros?",
+        question: "¿Qué puedes inferir sobre las razones y la efectividad de la decisión de Camila?",
+        options: [
+          { text: "Camila sabía que los mensajes visuales claros motivan y educan a sus compañeros mejor que las quejas.", isCorrect: true },
+          { text: "Camila quería que el profesor de arte le pusiera la calificación más alta del año.", isCorrect: false },
+          { text: "Los demás estudiantes no sabían qué era un grifo de agua potable.", isCorrect: false },
+          { text: "A Camila le sobraban cartulinas y pinturas en su mochila y quería deshacerse de ellas.", isCorrect: false }
+        ],
+        pienso: "Deduzco una causa lógica no expresada explícitamente a partir del resultado observado.",
+        localizo: "Camila elabora carteles con dibujos y lemas, y de inmediato todos cambian de hábito manteniendo los grifos cerrados.",
+        explico: "Se deduce que Camila entendió que la comunicación visual empática es una estrategia pedagógica eficaz para el cambio de conducta."
+      },
+      {
+        id: 8,
+        category: "Inferencia II",
+        title: "Reto 8: El Misterio del Tanque Central",
+        evidenceSource: "Informe Técnico Comunitario",
+        evidenceText: `
+          <p>«En el barrio Las Acacias se repararon 12 pequeñas fugas domiciliarias que parecían insignificantes. Al cabo de tres meses de control permanente, el tanque central de reserva registró un aumento del 30% en sus niveles, evitando cortes de agua durante la temporada seca». </p>
+        `,
+        hint: "Piensa en el efecto multiplicador de muchas gotas pequeñas que se pierden segundo a segundo.",
+        question: "¿Qué inferencia válida se extrae de los resultados obtenidos en el barrio Las Acacias?",
+        options: [
+          { text: "Las pequeñas gotas de agua que se escapan no tienen ninguna importancia real.", isCorrect: false },
+          { text: "La suma acumulada de pérdidas menores causa un impacto masivo en las reservas de toda la comunidad.", isCorrect: true },
+          { text: "En la temporada seca llovió mucho más adentro del tanque central subterráneo.", isCorrect: false },
+          { text: "Los vecinos dejaron de bañarse y lavar platos para no gastar agua.", isCorrect: false }
+        ],
+        pienso: "Relaciono el dato de reparar fugas pequeñas con el gran aumento del 30% en el tanque general.",
+        localizo: "Fugas que 'parecían insignificantes' reparadas resultaron en 'un aumento del 30% en sus niveles'.",
+        explico: "Se concluye deductivamente que el goteo persistente acumulado genera pérdidas colosales de agua comunitaria."
+      },
+      {
+        id: 9,
+        category: "Estrategia Detective",
+        title: "Reto 9: El Método Infalible P-L-E",
+        evidenceSource: "Código Secreto de la Agencia Detective",
+        evidenceText: `
+          <p>«Para que un detective nunca sea engañado por trampas textuales o respuestas engañosas, la Agencia entrena a sus integrantes en un procedimiento riguroso de tres momentos antes de marcar cualquier conclusión». </p>
+        `,
+        hint: "Recuerda la fórmula que utilizamos en cada reto: la mente, la ubicación y el argumento lógico.",
+        question: "¿Cuáles son los 3 pasos de la estrategia detective para comprobar la evidencia?",
+        options: [
+          { text: "Adivinar al azar, mirar al techo y tachar la opción más larga.", isCorrect: false },
+          { text: "Pienso (analizo la pregunta), Localizo (rastreo pistas en el texto) y Explico (argumento la respuesta).", isCorrect: true },
+          { text: "Copiar al compañero de pupitre, dudar todo el tiempo y esperar a que suene la campana.", isCorrect: false },
+          { text: "Memorizar sin comprender, repetir de memoria y no hacer preguntas nunca.", isCorrect: false }
+        ],
+        pienso: "Repaso la metodología metacognitiva aplicada a lo largo de toda la misión.",
+        localizo: "La estructura de comprobación que nos acompaña en todo el Escape Room.",
+        explico: "'Pienso, Localizo y Explico' es la estrategia sistemática que asegura una comprensión profunda y fundamentada."
+      },
+      {
+        id: 10,
+        category: "Principio DUA",
+        title: "Reto 10: La Llave de la Inclusión Total",
+        evidenceSource: "Normativa Pedagógica de la Agencia DUA",
+        evidenceText: `
+          <p>«Al terminar la investigación, la profesora Sofía anunció: 'Para demostrar lo que aprendieron, pueden presentar un informe escrito, grabar un podcast de audio, elaborar un mapa mental ilustrado o actuar una dramatización'». </p>
+        `,
+        hint: "Este principio respeta que cada estudiante pueda demostrar lo aprendido según sus talentos y formas de expresión.",
+        question: "¿Por qué esta propuesta ejemplifica el principio de Múltiples Formas de Acción y Expresión del DUA?",
+        options: [
+          { text: "Porque la docente no tenía ganas de corregir hojas de exámenes de papel.", isCorrect: false },
+          { text: "Porque reconoce que cada estudiante tiene distintas fortalezas para comunicar lo que comprende sin barreras.", isCorrect: true },
+          { text: "Porque dibujar o hablar en un audio exige mucho menos esfuerzo cognitivo que escribir.", isCorrect: false },
+          { text: "Porque solo los estudiantes que saben dramatizar pueden obtener la nota máxima.", isCorrect: false }
+        ],
+        pienso: "El DUA promueve alternativas diversas para que el aprendizaje se exprese con equidad.",
+        localizo: "La docente brinda cuatro modalidades distintas (escrito, podcast, mapa ilustrado o actuación).",
+        explico: "Permitir múltiples vías expresivas asegura que las barreras instrumentales no oculten la verdadera comprensión del estudiante."
+      }
+    ];
+
+    /* =====================================================================
+       2. ESTADO GLOBAL DEL JUEGO
+       ===================================================================== */
+    let currentChallengeIndex = 0;
+    let xp = 0;
+    let lives = 3;
+    let detectiveName = "Detective Estrella";
+    let selectedAvatar = "🔍 Lupa";
+    let canAnswer = true;
+    let audioPlaying = false;
+    let textToSpeechUtterance = null;
+
+    /* =====================================================================
+       3. EFECTOS DE SONIDO (WEB AUDIO API - SIN ARCHIVOS EXTERNOS)
+       ===================================================================== */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Sonido de Acierto / XP Desbloqueado (arpegio mayor alegre)
+    function playSuccessSound() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0, now + idx * 0.08);
+          gain.gain.linearRampToValueAtTime(0.2, now + idx * 0.08 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.28);
+        });
+      } catch (e) {
+        console.warn("Audio Context error:", e);
+      }
+    }
+
+    // Sonido de Error / Pista Bloqueada (tono suave y constructivo)
+    function playErrorSound() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const notes = [330, 261.63]; // E4, C4
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.28);
+        });
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    // Sonido de Clic sutil
+    function playClickSound() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.06);
+      } catch (e) {}
+    }
+
+    // Sonido de Victoria Final (fanfarria de detective)
+    function playVictorySound() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const notes = [440, 554.37, 659.25, 880, 880, 880, 1108.73];
+        const times = [0, 0.15, 0.30, 0.45, 0.65, 0.85, 1.05];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + times[i]);
+          gain.gain.setValueAtTime(0.25, now + times[i]);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + times[i] + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + times[i]);
+          osc.stop(now + times[i] + 0.38);
+        });
+      } catch (e) {}
+    }
+
+    /* =====================================================================
+       4. HERRAMIENTAS DUA: ACCESIBILIDAD, TEXT-TO-SPEECH Y ZOOM
+       ===================================================================== */
+    // Lector en Voz Alta (Web Speech API)
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) {
+        alert("Tu navegador no soporta lectura de voz en este momento.");
+        return;
+      }
+      stopTts();
+      const cleanText = text.replace(/<[^>]*>?/gm, ' ');
+      textToSpeechUtterance = new SpeechSynthesisUtterance(cleanText);
+      textToSpeechUtterance.lang = 'es-ES';
+      textToSpeechUtterance.rate = 0.95; // Velocidad pedagógica amigable
+
+      // Seleccionar voz en español si existe
+      const voices = window.speechSynthesis.getVoices();
+      const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+      if (spanishVoice) {
+        textToSpeechUtterance.voice = spanishVoice;
+      }
+
+      textToSpeechUtterance.onstart = () => {
+        audioPlaying = true;
+        updateTtsUi(true);
+      };
+
+      textToSpeechUtterance.onend = () => {
+        audioPlaying = false;
+        updateTtsUi(false);
+      };
+
+      textToSpeechUtterance.onerror = () => {
+        audioPlaying = false;
+        updateTtsUi(false);
+      };
+
+      window.speechSynthesis.speak(textToSpeechUtterance);
+    }
+
+    function stopTts() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      audioPlaying = false;
+      updateTtsUi(false);
+    }
+
+    function updateTtsUi(isPlaying) {
+      const icon = document.getElementById('ttsIcon');
+      const label = document.getElementById('ttsLabel');
+      if (isPlaying) {
+        icon.className = 'fa-solid fa-stop text-amber-400 animate-pulse';
+        if (label) label.textContent = 'Detener Voz';
+      } else {
+        icon.className = 'fa-solid fa-volume-high';
+        if (label) label.textContent = 'Lector DUA';
+      }
+    }
+
+    function toggleMainTts() {
+      playClickSound();
+      if (audioPlaying) {
+        stopTts();
+        return;
+      }
+
+      // Si estamos en pantalla de inicio
+      if (!document.getElementById('screenIntro').classList.contains('hidden')) {
+        speakText("Bienvenido al Escape Room de Comprensión Lectora: Misión, El Enigma de los Textos Bloqueados. El Cifrador Sombrío ha bloqueado la biblioteca del saber. Usa la estrategia Pienso, Localizo y Explico para desbloquear las cuatro llaves maestras.");
+        return;
+      }
+
+      // Si estamos en la pantalla de retos
+      if (!document.getElementById('screenGame').classList.contains('hidden')) {
+        readCurrentChallengeTts();
+        return;
+      }
+
+      // Si estamos en la pantalla final
+      if (!document.getElementById('screenFinal').classList.contains('hidden')) {
+        speakText("¡Misión cumplida, Detective! Con la voz, con el texto o un mapa visual, comprender es un derecho universal.");
+        return;
+      }
+    }
+
+    function readCurrentChallengeTts() {
+      const c = CHALLENGES[currentChallengeIndex];
+      if (!c) return;
+      const textToRead = `${c.title}. Categoría: ${c.category}. Texto de la evidencia: ${c.evidenceText}. Pregunta: ${c.question}. Opción A: ${c.options[0].text}. Opción B: ${c.options[1].text}. Opción C: ${c.options[2].text}. Opción D: ${c.options[3].text}.`;
+      speakText(textToRead);
+    }
+
+    // Zoom de Tipografía
+    function changeFontSize(size) {
+      playClickSound();
+      document.body.classList.remove('text-size-lg', 'text-size-xl');
+      if (size === 'lg') {
+        document.body.classList.add('text-size-lg');
+      } else if (size === 'xl') {
+        document.body.classList.add('text-size-xl');
+      }
+    }
+
+    // Regla de lectura visual interactiva DUA
+    let rulerActive = false;
+    function toggleReadingRuler() {
+      playClickSound();
+      rulerActive = !rulerActive;
+      const ruler = document.getElementById('duaReadingRuler');
+      const btn = document.getElementById('btnRulerToggle');
+      if (rulerActive) {
+        ruler.style.display = 'block';
+        btn.classList.add('bg-teal-600', 'text-white');
+        document.addEventListener('mousemove', moveRuler);
+        document.addEventListener('touchmove', moveRulerTouch);
+      } else {
+        ruler.style.display = 'none';
+        btn.classList.remove('bg-teal-600', 'text-white');
+        document.removeEventListener('mousemove', moveRuler);
+        document.removeEventListener('touchmove', moveRulerTouch);
+      }
+    }
+
+    function moveRuler(e) {
+      const ruler = document.getElementById('duaReadingRuler');
+      if (ruler) ruler.style.top = `${e.clientY - 24}px`;
+    }
+
+    function moveRulerTouch(e) {
+      if (e.touches && e.touches[0]) {
+        const ruler = document.getElementById('duaReadingRuler');
+        if (ruler) ruler.style.top = `${e.touches[0].clientY - 24}px`;
+      }
+    }
+
+    // Modo Alto Contraste
+    function toggleHighContrast() {
+      playClickSound();
+      document.body.classList.toggle('high-contrast');
+      const btn = document.getElementById('btnContrastToggle');
+      btn.classList.toggle('bg-amber-400');
+      btn.classList.toggle('text-slate-950');
+    }
+
+    // Modal DUA
+    function openDuaModal() {
+      playClickSound();
+      document.getElementById('duaInfoModal').classList.remove('hidden');
+    }
+
+    function closeDuaModal() {
+      playClickSound();
+      document.getElementById('duaInfoModal').classList.add('hidden');
+    }
+
+    // Selector de Avatar
+    function selectAvatar(avatar) {
+      playClickSound();
+      selectedAvatar = avatar;
+      document.querySelectorAll('#avatarSelector .avatar-btn').forEach(btn => {
+        if (btn.dataset.avatar === avatar) {
+          btn.classList.add('border-teal-400', 'border-2');
+          btn.classList.remove('border-slate-750');
+        } else {
+          btn.classList.remove('border-teal-400', 'border-2');
+          btn.classList.add('border-slate-750');
+        }
+      });
+    }
+
+    /* =====================================================================
+       5. FLUJO DE JUEGO Y RETOS
+       ===================================================================== */
+    function startGame() {
+      playClickSound();
+      const nameInput = document.getElementById('detectiveNameInput').value.trim();
+      if (nameInput) {
+        detectiveName = nameInput;
+      }
+      
+      currentChallengeIndex = 0;
+      xp = 0;
+      lives = 3;
+      updateLivesUi();
+      updateXpUi();
+
+      document.getElementById('screenIntro').classList.add('hidden');
+      document.getElementById('screenFinal').classList.add('hidden');
+      document.getElementById('screenGame').classList.remove('hidden');
+
+      renderChallenge(currentChallengeIndex);
+    }
+
+    function renderChallenge(index) {
+      canAnswer = true;
+      stopTts();
+      const c = CHALLENGES[index];
+      if (!c) return;
+
+      // Ocultar caja de pista por defecto
+      const hintBox = document.getElementById('hintBox');
+      hintBox.classList.add('hidden');
+      hintBox.textContent = `💡 Pista Confidencial: ${c.hint}`;
+
+      // Actualizar Encabezado y Progreso
+      document.getElementById('challengeBadge').textContent = `Reto ${index + 1} de ${CHALLENGES.length}`;
+      document.getElementById('categoryBadge').textContent = c.category;
+      document.getElementById('caseNumber').textContent = (index + 1).toString().padStart(2, '0');
+      document.getElementById('progressBar').style.width = `${((index + 1) / CHALLENGES.length) * 100}%`;
+
+      // Inyectar Evidencia y Pregunta
+      document.getElementById('evidenceSource').textContent = `${c.title} • ${c.evidenceSource}`;
+      document.getElementById('evidenceText').innerHTML = c.evidenceText;
+      document.getElementById('questionText').textContent = c.question;
+
+      // Inyectar Opciones A, B, C, D
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      const letters = ['A', 'B', 'C', 'D'];
+      c.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `option-button group w-full text-left p-4 rounded-2xl bg-slate-950/80 hover:bg-slate-800/90 border-2 border-slate-800 hover:border-teal-500/60 transition-all duration-200 flex items-start gap-3.5 shadow-md active:scale-[0.99] cursor-pointer`;
+        btn.setAttribute('aria-label', `Opción ${letters[optIdx]}: ${opt.text}`);
+        
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl bg-slate-850 group-hover:bg-teal-500 group-hover:text-slate-950 text-teal-300 font-extrabold flex items-center justify-center shrink-0 border border-slate-700 transition">
+            ${letters[optIdx]}
+          </span>
+          <span class="text-slate-200 group-hover:text-white font-medium text-sm sm:text-base leading-snug pt-0.5">
+            ${opt.text}
+          </span>
+        `;
+
+        btn.onclick = () => handleSelectOption(optIdx, btn);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function toggleHint() {
+      playClickSound();
+      const hintBox = document.getElementById('hintBox');
+      hintBox.classList.toggle('hidden');
+    }
+
+    function handleSelectOption(selectedIndex, buttonEl) {
+      if (!canAnswer) return;
+      canAnswer = false;
+
+      const c = CHALLENGES[currentChallengeIndex];
+      const selectedOption = c.options[selectedIndex];
+
+      // Desactivar todos los botones de opciones
+      const allButtons = document.querySelectorAll('.option-button');
+      allButtons.forEach(b => {
+        b.disabled = true;
+        b.classList.add('opacity-75');
+      });
+
+      if (selectedOption.isCorrect) {
+        // Respuesta Correcta
+        playSuccessSound();
+        buttonEl.classList.remove('border-slate-800', 'bg-slate-950/80');
+        buttonEl.classList.add('border-emerald-500', 'bg-emerald-950/60', 'text-white');
+        
+        xp += 100;
+        updateXpUi();
+
+        showFeedbackModal(true, c);
+      } else {
+        // Respuesta Incorrecta
+        playErrorSound();
+        buttonEl.classList.remove('border-slate-800', 'bg-slate-950/80');
+        buttonEl.classList.add('border-rose-500', 'bg-rose-950/60', 'text-white');
+
+        lives--;
+        updateLivesUi();
+
+        showFeedbackModal(false, c);
+      }
+    }
+
+    /* =====================================================================
+       6. MODAL DE RETROALIMENTACIÓN P-L-E
+       ===================================================================== */
+    function showFeedbackModal(isCorrect, challenge) {
+      const modal = document.getElementById('feedbackModal');
+      const card = document.getElementById('feedbackModalCard');
+      const iconBox = document.getElementById('feedbackIconBox');
+      const sub = document.getElementById('feedbackSub');
+      const title = document.getElementById('feedbackTitle');
+      const btnNext = document.getElementById('btnFeedbackNext');
+
+      if (isCorrect) {
+        card.className = "bg-slate-900 border-2 border-emerald-500/60 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative animate-pop space-y-4";
+        iconBox.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-black shrink-0";
+        iconBox.innerHTML = '<i class="fa-solid fa-lock-open"></i>';
+        sub.className = "text-xs font-bold uppercase tracking-wider text-emerald-400";
+        sub.textContent = "¡Evidencia Desbloqueada! (+100 XP)";
+        title.textContent = "¡Excelente deducción, detective!";
+        btnNext.className = "w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 transition hover:brightness-110 active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 cursor-pointer";
+        btnNext.innerHTML = '<span>Continuar Investigación</span> <i class="fa-solid fa-arrow-right"></i>';
+      } else {
+        card.className = "bg-slate-900 border-2 border-rose-500/60 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative animate-pop space-y-4";
+        iconBox.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl font-black shrink-0";
+        iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        sub.className = "text-xs font-bold uppercase tracking-wider text-rose-400";
+        sub.textContent = "¡Pista Bloqueada! (-1 Lupa de Investigación)";
+        title.textContent = "Atención a las pistas del texto";
+        btnNext.className = "w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-amber-500 to-rose-500 text-slate-950 transition hover:brightness-110 active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 cursor-pointer";
+        btnNext.innerHTML = '<span>Comprender y Avanzar</span> <i class="fa-solid fa-arrow-right"></i>';
+      }
+
+      // Rellenar P-L-E
+      document.getElementById('feedbackPienso').textContent = challenge.pienso;
+      document.getElementById('feedbackLocalizo').textContent = challenge.localizo;
+      document.getElementById('feedbackExplico').textContent = challenge.explico;
+
+      modal.classList.remove('hidden');
+    }
+
+    function nextChallenge() {
+      playClickSound();
+      document.getElementById('feedbackModal').classList.add('hidden');
+
+      // Verificar si se agotaron las vidas
+      if (lives <= 0) {
+        showRecoveryModal();
+        return;
+      }
+
+      currentChallengeIndex++;
+
+      if (currentChallengeIndex < CHALLENGES.length) {
+        renderChallenge(currentChallengeIndex);
+      } else {
+        finishGame();
+      }
+    }
+
+    /* =====================================================================
+       7. SALA DE APOYO DUA (RECUPERACIÓN SIN FRUSTRACIÓN)
+       ===================================================================== */
+    function showRecoveryModal() {
+      document.getElementById('recoveryModal').classList.remove('hidden');
+    }
+
+    function closeRecoveryModal() {
+      playClickSound();
+      lives = 3;
+      updateLivesUi();
+      document.getElementById('recoveryModal').classList.add('hidden');
+
+      // Continuar al siguiente o reintentar
+      currentChallengeIndex++;
+      if (currentChallengeIndex < CHALLENGES.length) {
+        renderChallenge(currentChallengeIndex);
+      } else {
+        finishGame();
+      }
+    }
+
+    /* =====================================================================
+       8. MARCADORES Y PANTALLA FINAL
+       ===================================================================== */
+    function updateXpUi() {
+      const el = document.getElementById('xpScore');
+      el.textContent = xp;
+      el.classList.add('scale-125', 'text-amber-300');
+      setTimeout(() => el.classList.remove('scale-125', 'text-amber-300'), 250);
+    }
+
+    function updateLivesUi() {
+      const container = document.getElementById('livesContainer');
+      container.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const icon = document.createElement('i');
+        if (i < lives) {
+          icon.className = 'fa-solid fa-magnifying-glass text-teal-400 life-icon drop-shadow';
+        } else {
+          icon.className = 'fa-solid fa-magnifying-glass text-slate-700 life-icon opacity-40';
+        }
+        container.appendChild(icon);
+      }
+    }
+
+    function finishGame() {
+      stopTts();
+      playVictorySound();
+
+      document.getElementById('screenGame').classList.add('hidden');
+      document.getElementById('screenFinal').classList.remove('hidden');
+
+      // Nombre y Avatar
+      document.getElementById('finalDetectiveName').textContent = detectiveName;
+      document.getElementById('finalAvatar').textContent = selectedAvatar.split(' ')[0] || '🔍';
+      document.getElementById('finalXpDisplay').textContent = xp;
+
+      // Calcular Rango según XP
+      const rankBadge = document.getElementById('finalRankBadge');
+      if (xp >= 900) {
+        rankBadge.textContent = "Detective Maestro DUA (Nivel Leyenda)";
+        rankBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500";
+      } else if (xp >= 700) {
+        rankBadge.textContent = "Detective Senior de Evidencias";
+        rankBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500";
+      } else if (xp >= 500) {
+        rankBadge.textContent = "Detective Investigador de Campo";
+        rankBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500";
+      } else {
+        rankBadge.textContent = "Detective en Formación";
+        rankBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-slate-700 text-slate-200 border border-slate-600";
+      }
+    }
+
+    function restartGame() {
+      playClickSound();
+      currentChallengeIndex = 0;
+      xp = 0;
+      lives = 3;
+      document.getElementById('screenFinal').classList.add('hidden');
+      document.getElementById('screenIntro').classList.remove('hidden');
+    }
+
+    // Atajos de teclado accesibles (1, 2, 3, 4 para responder)
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+      if (['1', '2', '3', '4'].includes(key)) {
+        const optionIndex = parseInt(key) - 1;
+        const allButtons = document.querySelectorAll('.option-button');
+        if (allButtons && allButtons[optionIndex] && !allButtons[optionIndex].disabled) {
+          allButtons[optionIndex].click();
+        }
+      } else if (key.toLowerCase() === 'r') {
+        toggleReadingRuler();
+      }
+    });
+  </script>
+</body>
+</html>

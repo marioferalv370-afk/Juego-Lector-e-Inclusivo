@@ -1,0 +1,6 @@
+{
+  "name": "Misión: El Enigma de los Textos Bloqueados",
+  "description": "Escape Room Digital de Comprensión Lectora para Educación Básica Media con enfoque DUA y la Agencia de Detectives Lectores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
